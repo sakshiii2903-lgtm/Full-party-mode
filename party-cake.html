@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Birthday Cake Blowout Party!</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #f7cac9 0%, #92a8d1 100%);
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+    }
+    .container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+    .cake-box {
+      position: relative;
+      width: 550px;
+      height: 400px;
+      z-index: 3;
+    }
+    .cake-message {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 2em;
+      color: #4a4e69;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 12px #fff;
+      z-index: 4;
+    }
+    /* Balloons */
+    .balloon {
+      position: absolute;
+      width: 48px;
+      height: 68px;
+      border-radius: 24px 24px 32px 32px;
+      background: radial-gradient(circle at 30% 30%, #fff6 10%, #e63946 100%);
+      box-shadow: 0 8px 16px #2222;
+      border: 2px solid #fff;
+      animation: floatBalloons 7s ease-in-out infinite;
+      z-index: 2;
+    }
+    .balloon.blue { background: radial-gradient(circle at 30% 30%, #fff6 10%, #4f8cff 100%); }
+    .balloon.yellow { background: radial-gradient(circle at 30% 30%, #fff6 10%, #ffb703 100%); }
+    .balloon.green { background: radial-gradient(circle at 30% 30%, #fff6 10%, #38b000 100%); }
+    .balloon.pink { background: radial-gradient(circle at 30% 30%, #fff6 10%, #f72585 100%); }
+    @keyframes floatBalloons {
+      0%   { transform: translateY(0) rotate(-3deg); }
+      40%  { transform: translateY(-20px) rotate(3deg);}
+      60%  { transform: translateY(-30px) rotate(-2deg);}
+      100% { transform: translateY(0) rotate(-3deg);}
+    }
+    /* Confetti */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 18px;
+      border-radius: 4px;
+      opacity: 0.8;
+      z-index: 5;
+      animation: fallConfetti 2.5s linear infinite;
+    }
+    @keyframes fallConfetti {
+      0%   { transform: translateY(-80px) rotate(0deg);}
+      100% { transform: translateY(600px) rotate(360deg);}
+    }
+    /* Microphone Button */
+    .mic-btn {
+      margin-top: 30px;
+      background: #e63946;
+      color: #fff;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 30px;
+      padding: 16px 36px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px #1112;
+      transition: background 0.2s;
+      z-index: 10;
+    }
+    .mic-btn.listening {
+      background: #38b000;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 8px #38b00077;}
+      50% { box-shadow: 0 0 28px #38b000cc;}
+      100% { box-shadow: 0 0 8px #38b00077;}
+    }
+    .hint {
+      font-size: 1em;
+      color: #222;
+      margin-top: 20px;
+      text-shadow: 0 1px 6px #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="cake-message">Make a wish & blow out the candles!</div>
+    <div class="cake-box" id="cake-box">
+      <!-- SVG Cake will be injected here -->
+    </div>
+    <button class="mic-btn" id="mic-btn">Activate Microphone</button>
+    <div class="hint">Blow towards your mic to extinguish the candles 🎤</div>
+    <audio id="birthday-audio" src="Preet Re Dhadak 2 320 Kbps.mp3"></audio>
+  </div>
+  <script>
+    // Balloons
+    const balloonColors = ['blue', 'yellow', 'green', 'pink'];
+    for (let i = 0; i < 7; i++) {
+      const balloon = document.createElement('div');
+      balloon.className = 'balloon ' + balloonColors[i % balloonColors.length];
+      balloon.style.left = (50 + Math.random() * 400) + 'px';
+      balloon.style.top = (Math.random() * 220) + 'px';
+      document.body.appendChild(balloon);
+    }
+    // Confetti
+    const confettiColors = ['#e63946','#4f8cff','#ffb703','#38b000','#f72585','#fff'];
+    for (let i = 0; i < 40; i++) {
+      const conf = document.createElement('div');
+      conf.className = 'confetti';
+      conf.style.background = confettiColors[i % confettiColors.length];
+      conf.style.left = (30 + Math.random() * 500) + 'px';
+      conf.style.top = (Math.random() * 100) + 'px';
+      conf.style.transform = `rotate(${Math.random()*360}deg)`;
+      conf.style.animationDelay = (Math.random()*2)+'s';
+      document.body.appendChild(conf);
+    }
+    // SVG Cake + Candles
+    function makeCakeSVG() {
+      let svg = `<svg width="550" height="400" viewBox="0 0 550 400">
+        <ellipse cx="275" cy="340" rx="140" ry="38" fill="#fff" opacity="0.35"/>
+        <ellipse cx="275" cy="308" rx="120" ry="32" fill="#f7cac9" opacity="0.75"/>
+        <rect x="155" y="110" width="240" height="200" rx="60" fill="#f7cac9" stroke="#fff" stroke-width="5"/>
+        <ellipse cx="275" cy="110" rx="120" ry="40" fill="#fff7da" stroke="#fff" stroke-width="5"/>
+        <ellipse cx="275" cy="110" rx="120" ry="40" fill="#ffe0ac" opacity="0.45"/>
+        <rect x="180" y="150" width="190" height="90" rx="40" fill="#fff7da" opacity="0.25"/>
+        <!-- Candles -->
+        ${makeCandlesSVG(24)}
+        <!-- Cake decorations -->
+        <circle cx="200" cy="210" r="10" fill="#e63946" opacity="0.6"/>
+        <circle cx="350" cy="220" r="10" fill="#4f8cff" opacity="0.6"/>
+        <circle cx="260" cy="230" r="8" fill="#38b000" opacity="0.6"/>
+        <circle cx="310" cy="255" r="7" fill="#ffb703" opacity="0.6"/>
+      </svg>`;
+      return svg;
+    }
+    function makeCandlesSVG(count) {
+      let svg = '';
+      let baseY = 97;
+      let baseR = 105;
+      let cx = 275;
+      for (let i = 0; i < count; i++) {
+        const angle = (2 * Math.PI / count) * i - Math.PI/2;
+        const x = cx + Math.cos(angle) * baseR;
+        const y = baseY + Math.sin(angle) * 32;
+        svg += `<g class="candle" id="candle${i}">
+          <rect x="${x-5}" y="${y-32}" width="10" height="28" rx="3" fill="#ffd700" stroke="#c0a000" stroke-width="1"/>
+          <ellipse cx="${x}" cy="${y-34}" rx="6" ry="3" fill="#fff7da" opacity="0.8"/>
+          <g class="flame" id="flame${i}">
+            <ellipse cx="${x}" cy="${y-38}" rx="3.3" ry="7" fill="orange" opacity="0.9"/>
+            <ellipse cx="${x}" cy="${y-40}" rx="2" ry="4" fill="yellow" opacity="0.7"/>
+          </g>
+        </g>`;
+      }
+      return svg;
+    }
+    document.getElementById('cake-box').innerHTML = makeCakeSVG();
+
+    // Animate candle flames
+    let flameAnim = setInterval(() => {
+      for (let i = 0; i < 24; i++) {
+        let flame = document.getElementById('flame'+i);
+        if (flame) {
+          flame.setAttribute('transform', `scale(1,${0.95 + Math.random()*0.12})`);
+        }
+      }
+    }, 180);
+
+    // Microphone & Blow Detection
+    let micActive = false, blown = false;
+    const micBtn = document.getElementById('mic-btn');
+    micBtn.onclick = async function() {
+      if (micActive) return;
+      micActive = true;
+      micBtn.textContent = 'Listening... Blow into your mic!';
+      micBtn.classList.add('listening');
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const src = ctx.createMediaStreamSource(stream);
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 512;
+        src.connect(analyser);
+        let data = new Uint8Array(analyser.fftSize);
+        function checkBlow() {
+          analyser.getByteTimeDomainData(data);
+          // Calculate RMS (Root Mean Squared) amplitude
+          let rms = 0;
+          for (let i = 0; i < data.length; i++) {
+            let norm = (data[i]-128)/128;
+            rms += norm*norm;
+          }
+          rms = Math.sqrt(rms / data.length);
+          if (rms > 0.20 && !blown) { // Sensitivity threshold
+            blowOutCandles();
+            blown = true;
+            micBtn.textContent = 'Candles blown out!';
+            micBtn.classList.remove('listening');
+            ctx.close();
+            stream.getTracks().forEach(track => track.stop());
+          }
+          if (!blown) requestAnimationFrame(checkBlow);
+        }
+        checkBlow();
+      } catch(e) {
+        micBtn.textContent = 'Mic error! Try again';
+        micBtn.classList.remove('listening');
+      }
+    };
+    function blowOutCandles() {
+      for (let i = 0; i < 24; i++) {
+        let flame = document.getElementById('flame'+i);
+        if (flame) flame.style.opacity = 0;
+      }
+      // Play song
+      const audio = document.getElementById('birthday-audio');
+      audio.currentTime = 60; // Start at 1 minute, if you wish
+      audio.play();
+      // Show confetti burst
+      for (let i = 0; i < 35; i++) {
+        let conf = document.createElement('div');
+        conf.className = 'confetti';
+        conf.style.background = confettiColors[i % confettiColors.length];
+        conf.style.left = (180 + Math.random() * 220) + 'px';
+        conf.style.top = '120px';
+        conf.style.transform = `rotate(${Math.random()*360}deg) scale(${1+Math.random()*1.2})`;
+        conf.style.animationDuration = (1+Math.random()*1.5)+'s';
+        conf.style.opacity = 0.95;
+        document.body.appendChild(conf);
+        setTimeout(()=>conf.remove(), 2500);
+      }
+    }
+  </script>
+</body>
+</html>
